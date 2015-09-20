@@ -2,7 +2,7 @@ package tameshigiri
 
 import "testing"
 
-func (self *Assertion) ExampleEquals() {
+func ExampleAssertion() {
     var t         = &testing.T{}
     var assertion = Assertion{ T: t }
     var expected  = 123
