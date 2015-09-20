@@ -24,8 +24,8 @@ func NewAssertion(t *testing.T) Assertion {
 //
 // When the result is false, assuming that the given result is unexpected, the
 // most recent call stacks (up to the size of 2KB) will be provided along with
-// the human-readable reason.
-func (self *Assertion) IsTrue(result bool, reason string) bool {
+// the human-readable description.
+func (self *Assertion) IsTrue(result bool, description string) bool {
     NumberOfProcessedAssertion += 1
 
     if !result {
@@ -33,7 +33,7 @@ func (self *Assertion) IsTrue(result bool, reason string) bool {
 
         if self.stackDumpEnabled {
             self.T.Logf("#%d FAILED\n", NumberOfProcessedAssertion)
-            self.T.Logf("#%d Reason: %s\n", NumberOfProcessedAssertion, reason)
+            self.T.Log("#", NumberOfProcessedAssertion, description)
         }
 
         return false
@@ -45,11 +45,11 @@ func (self *Assertion) IsTrue(result bool, reason string) bool {
 // Check if the result is false.
 //
 // This is the opposite of (*Assertion) IsTrue(...)
-func (self *Assertion) IsFalse(result bool, reason string) bool {
-    return self.IsTrue(!result, reason)
+func (self *Assertion) IsFalse(result bool, description string) bool {
+    return self.IsTrue(!result, description)
 }
 
-func (self *Assertion) Equals(expected interface{}, actual interface{}, reason string) bool {
+func (self *Assertion) Equals(expected interface{}, actual interface{}, description string) bool {
     var yes bool
 
     var stackDumpEnabled = self.stackDumpEnabled
@@ -62,7 +62,7 @@ func (self *Assertion) Equals(expected interface{}, actual interface{}, reason s
 
     if !yes {
         self.T.Logf("#%d FAILED\n", NumberOfProcessedAssertion)
-        self.T.Log("#", NumberOfProcessedAssertion, "Reason:", reason)
+        self.T.Log("#", NumberOfProcessedAssertion, description)
         self.T.Log("#", NumberOfProcessedAssertion, "Expected:", expected)
         self.T.Log("#", NumberOfProcessedAssertion, "Given:", actual)
     }

@@ -35,8 +35,9 @@ func localTestReSearch(
     )
 
     assertion.IsTrue(
-        result.CountIndices() == expectedListLength,
-        fmt.Sprintf("Expected item-list count: %d, given %d", expectedListLength, result.CountIndices()),
+        expectedListLength,
+        result.CountIndices(),
+        "Item-list count",
     )
 
     if expectedListLength > 0 {
@@ -45,8 +46,9 @@ func localTestReSearch(
             expected = expectedList[index]
 
             assertion.IsTrue(
-                *actual == expected,
-                fmt.Sprintf("Expected ItemList#%d is '%s', not '%s'.", index, expected, *actual),
+                expected,
+                *actual,
+                fmt.Sprintf("List#%d", index),
             )
         }
     }
