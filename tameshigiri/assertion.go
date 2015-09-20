@@ -1,4 +1,4 @@
-package tori
+package tameshigiri
 
 import "runtime"
 import "testing"
@@ -6,6 +6,27 @@ import "testing"
 // Static reference number of the processed assertions
 var NumberOfProcessedAssertion uint32 = 0
 
+// Assertion class
+//
+// When the assertion fails, assuming that the given result is unexpected, the
+// most recent call stacks (up to the size of 2KB) will be provided along with
+// the human-readable description.
+//
+// Example:
+//
+//      package panda
+//
+//      import "testing"
+//      import "github.com/shiroyuki/tori-go/tameshigiri"
+//
+//      func TestPanda(t *testing.T) {
+//          var assertion = tameshigiri.NewAssertion(t)
+//          var expected  = 123
+//          var actual    = 123
+//
+//          t.Equals(expected, actual, "Something must be wrong.")
+//      }
+//
 type Assertion struct {
     T                *testing.T
     stackDumpEnabled bool
@@ -21,10 +42,6 @@ func NewAssertion(t *testing.T) Assertion {
 }
 
 // Check if the result is true.
-//
-// When the result is false, assuming that the given result is unexpected, the
-// most recent call stacks (up to the size of 2KB) will be provided along with
-// the human-readable description.
 func (self *Assertion) IsTrue(result bool, description string) bool {
     NumberOfProcessedAssertion += 1
 
@@ -43,12 +60,11 @@ func (self *Assertion) IsTrue(result bool, description string) bool {
 }
 
 // Check if the result is false.
-//
-// This is the opposite of (*Assertion) IsTrue(...)
 func (self *Assertion) IsFalse(result bool, description string) bool {
     return self.IsTrue(!result, description)
 }
 
+// Assert if the actual value is equal to the expected value
 func (self *Assertion) Equals(expected interface{}, actual interface{}, description string) bool {
     var yes bool
 
@@ -60,7 +76,7 @@ func (self *Assertion) Equals(expected interface{}, actual interface{}, descript
 
     yes = self.IsTrue(expected == actual, "")
 
-    if !yes {
+    if stackDumpEnabled && !yes {
         self.T.Logf("#%d FAILED\n", NumberOfProcessedAssertion)
         self.T.Log("#", NumberOfProcessedAssertion, description)
         self.T.Log("#", NumberOfProcessedAssertion, "Expected:", expected)

@@ -1,13 +1,13 @@
 package web
 
 import "testing"
-import tori "../"
+import "../tameshigiri"
 
 func localTestWebRoutingRouteNewRoute(t *testing.T, givenPattern string, reversible bool) {
-    var assertion tori.Assertion
+    var assertion tameshigiri.Assertion
     var newRoute  Route
 
-    assertion = tori.NewAssertion(t)
+    assertion = tameshigiri.NewAssertion(t)
     newRoute  = NewRoute(givenPattern, reversible)
 
     assertion.IsTrue(
@@ -32,11 +32,11 @@ func TestWebRoutingRouteNewRouteNormal(t *testing.T) {
 }
 
 func _TestWebRoutingReversibleRouteGetCompiledPattern(t *testing.T) {
-    var assertion    tori.Assertion
+    var assertion    tameshigiri.Assertion
     var givenPattern string
     var newRoute     Route
 
-    assertion = tori.NewAssertion(t)
+    assertion = tameshigiri.NewAssertion(t)
 
     givenPattern = "/user/{alias}"
     newRoute     = NewRoute(givenPattern, true)
@@ -47,11 +47,11 @@ func _TestWebRoutingReversibleRouteGetCompiledPattern(t *testing.T) {
 }
 
 func TestWebRoutingNonReversibleRouteGetCompiledPattern(t *testing.T) {
-    var assertion    tori.Assertion
+    var assertion    tameshigiri.Assertion
     var givenPattern string
     var newRoute     Route
 
-    assertion = tori.NewAssertion(t)
+    assertion = tameshigiri.NewAssertion(t)
 
     givenPattern = "/user/(?P<alias>[^/]+)"
     newRoute     = NewRoute(givenPattern, false)

@@ -2,7 +2,7 @@ package re
 
 import "fmt"
 import "testing"
-import tori "../"
+import "../tameshigiri"
 
 func localTestReSearch(
     t            *testing.T,
@@ -16,7 +16,7 @@ func localTestReSearch(
     var actual   *string
     var expected string
 
-    var assertion = tori.NewAssertion(t)
+    var assertion = tameshigiri.NewAssertion(t)
     var compiled  = Compile(pattern)
     var result    = compiled.Search(sample)
 
