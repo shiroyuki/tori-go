@@ -34,7 +34,7 @@ func localTestReSearch(
         "Total count",
     )
 
-    assertion.IsTrue(
+    assertion.Equals(
         expectedListLength,
         result.CountIndices(),
         "Item-list count",
@@ -45,7 +45,7 @@ func localTestReSearch(
             actual   = result.Index(index)
             expected = expectedList[index]
 
-            assertion.IsTrue(
+            assertion.Equals(
                 expected,
                 *actual,
                 fmt.Sprintf("List#%d", index),
@@ -53,18 +53,20 @@ func localTestReSearch(
         }
     }
 
-    assertion.IsTrue(
-        result.CountKeys() == expectedDictLength,
-        fmt.Sprintf("Expected dictionary count: %d, given %d", expectedDictLength, result.CountKeys()),
+    assertion.Equals(
+        expectedDictLength,
+        result.CountKeys(),
+        "Dictionary count",
     )
 
     if expectedDictLength > 0 {
         for key, expected = range expectedDict {
             actual = result.Key(key)
 
-            assertion.IsTrue(
-                *actual == expected,
-                fmt.Sprintf("Expected ItemList#%s is '%s', not '%s'.", key, expected, *actual),
+            assertion.Equals(
+                expected,
+                *actual,
+                fmt.Sprintf("Dictionary[%s]", key),
             )
         }
     }
