@@ -31,7 +31,8 @@ func TestWebRoutingRouteNewRouteNormal(t *testing.T) {
     localTestWebRoutingRouteNewRoute(t, "/", false)
 }
 
-func _TestWebRoutingReversibleRouteGetCompiledPattern(t *testing.T) {
+func TestWebRoutingReversibleRouteGetCompiledPattern(t *testing.T) {
+    t.Skip()
     var assertion    tameshigiri.Assertion
     var givenPattern string
     var newRoute     Route

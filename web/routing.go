@@ -37,7 +37,7 @@ func NewRoute(pattern string, reversible bool) Route {
 }
 
 func (self *Route) GetCompiledPattern() *tori_re.Expression {
-    var compiled tori_re.Expression
+    var compiled             tori_re.Expression
     var simpleRoutingPattern tori_re.Expression
 
     if self.RePattern != nil {
