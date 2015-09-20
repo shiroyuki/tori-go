@@ -4,29 +4,13 @@ import "runtime"
 import "testing"
 
 // Static reference number of the processed assertions
-var NumberOfProcessedAssertion uint32 = 0
+var NumberOfProcessedAssertion uint = 0
 
 // Assertion class
 //
 // When the assertion fails, assuming that the given result is unexpected, the
 // most recent call stacks (up to the size of 2KB) will be provided along with
 // the human-readable description.
-//
-// Example:
-//
-//      package panda
-//
-//      import "testing"
-//      import "github.com/shiroyuki/tori-go/tameshigiri"
-//
-//      func TestPanda(t *testing.T) {
-//          var assertion = tameshigiri.NewAssertion(t)
-//          var expected  = 123
-//          var actual    = 123
-//
-//          t.Equals(expected, actual, "Something must be wrong.")
-//      }
-//
 type Assertion struct {
     T                *testing.T
     stackDumpEnabled bool
