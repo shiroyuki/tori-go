@@ -1,5 +1,6 @@
 package tameshigiri
 
+import "fmt"
 import "runtime"
 import "testing"
 
@@ -34,7 +35,7 @@ func (self *Assertion) IsTrue(result bool, description string) bool {
 
         if self.stackDumpEnabled {
             self.T.Logf("#%d FAILED\n", NumberOfProcessedAssertion)
-            self.T.Log("#", NumberOfProcessedAssertion, description)
+            self.T.Logf("#%d %s\n", NumberOfProcessedAssertion, description)
         }
 
         return false
@@ -62,9 +63,12 @@ func (self *Assertion) Equals(expected interface{}, actual interface{}, descript
 
     if stackDumpEnabled && !yes {
         self.T.Logf("#%d FAILED\n", NumberOfProcessedAssertion)
-        self.T.Log("#", NumberOfProcessedAssertion, description)
-        self.T.Log("#", NumberOfProcessedAssertion, "Expected:", expected)
-        self.T.Log("#", NumberOfProcessedAssertion, "Given:", actual)
+        self.T.Logf("#%d %s\n", NumberOfProcessedAssertion, description)
+
+        prefix := fmt.Sprintf("#%d")
+
+        self.T.Log(prefix, "Expected:", expected)
+        self.T.Log(prefix, "Given:", actual)
     }
 
     if stackDumpEnabled {
