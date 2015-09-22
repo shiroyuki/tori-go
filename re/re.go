@@ -1,7 +1,7 @@
 // Package re provides a simplified Regular Expression class
 package re // TODO rename this file to expression.go
 
-import "fmt" // for debugging
+//import "fmt" // for debugging
 import "regexp"
 
 type Expression struct {
@@ -13,24 +13,71 @@ func Compile(pattern string) Expression {
 }
 
 func (self *Expression) SearchOne(content string) SingleResult {
+    matches := self.Internal.FindStringSubmatch(content)
+
+    return self.makeSingleResult(matches)
+}
+
+func (self *Expression) SearchAll(content string) MultipleResult {
+    var cursor     SingleResult
+    var itemList   []string
+    var dictionary map[string][]string
+    var completeMatchIncluded bool
+
+    completeMatchIncluded = false
+
+    matches := self.Internal.FindAllStringSubmatch(content, -1)
+
+    dictionary = make(map[string][]string)
+
+    for i := range matches {
+        cursor = self.makeSingleResult(matches[i])
+
+        if !completeMatchIncluded {
+            if itemList == nil {
+                itemList = cursor.ItemList
+            } else {
+                itemList = self.combineList(itemList, cursor.ItemList)
+            }
+        } else {
+            if itemList == nil {
+                itemList = cursor.ItemList[1:]
+            } else {
+                itemList = self.combineList(itemList, cursor.ItemList[1:])
+            }
+        }
+
+        for k, v := range cursor.Dictionary {
+            _, ok := dictionary[k]
+
+            if !ok {
+                dictionary[k] = make([]string, 1)
+            }
+
+            dictionary[k] = append(dictionary[k], v)
+        }
+    }
+
+    return NewMultipleResult(itemList, dictionary)
+}
+
+func (self *Expression) makeSingleResult(matches []string) SingleResult {
     var itemList   []string
     var nextIndex  int
     var dictionary map[string]string
-
-    matches := self.Internal.FindStringSubmatch(content)
 
     nextIndex  = 0
     dictionary = make(map[string]string)
     itemList   = make([]string, len(matches)) // allocate the memory to the maximum length first.
 
-    fmt.Println(content, matches)
+    //fmt.Println(content, matches)
 
     if len(matches) == 0 {
         return NewSingleResult(itemList, dictionary)
     }
 
     for i, name := range self.Internal.SubexpNames() {
-        fmt.Println("I", i, "K", name, "KL", len(name), "V", matches[i])
+        //fmt.Println("I", i, "K", name, "KL", len(name), "V", matches[i])
 
         value := matches[i]
 
@@ -45,7 +92,7 @@ func (self *Expression) SearchOne(content string) SingleResult {
         dictionary[name] = matches[i]
     }
 
-    fmt.Println(itemList[:nextIndex], dictionary)
+    //fmt.Println(itemList[:nextIndex], dictionary)
 
     return NewSingleResult(
         itemList[:nextIndex], // minimize the memory usage by trimming itemList.
@@ -53,8 +100,17 @@ func (self *Expression) SearchOne(content string) SingleResult {
     )
 }
 
-func (self *Expression) SearchAll(content string) *MultipleResult {
-    //matches := self.Internal.FindAllStringSubmatch(content, -1)
+func (self *Expression) combineList(a []string, b[]string) []string {
+    var i int
+    var c = make([]string, len(a) + len(b))
 
-    return nil
+    for i = range a {
+        c = append(c, a[i])
+    }
+
+    for i = range b {
+        c = append(c, b[i])
+    }
+
+    return c
 }
