@@ -65,7 +65,7 @@ func (self *Assertion) Equals(expected interface{}, actual interface{}, descript
         self.T.Logf("#%d FAILED\n", NumberOfProcessedAssertion)
         self.T.Logf("#%d %s\n", NumberOfProcessedAssertion, description)
 
-        prefix := fmt.Sprintf("#%d")
+        prefix := fmt.Sprintf("#%d", NumberOfProcessedAssertion)
 
         self.T.Log(prefix, "Expected:", expected)
         self.T.Log(prefix, "Given:", actual)

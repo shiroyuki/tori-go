@@ -76,70 +76,74 @@ func localTestReSearchAll(
     t            *testing.T,
     pattern      string,
     sample       string,
-    //expectedList []string,
-    //expectedDict map[string][]string,
+    expectedList []string,
+    expectedDict map[string][]string,
 ) {
-    // var index    int
-    // var key      string
-    // var actual   *string
-    // var expected string
+    var index    int
+    var key      string
+    var actualL  *string
+    var expected string
 
-    // var assertion = tameshigiri.NewAssertion(t)
+    var actuals   *[]string
+    var expecteds []string
+
+    var assertion = tameshigiri.NewAssertion(t)
     var compiled  = Compile(pattern)
     var result    = compiled.SearchAll(sample)
 
-    fmt.Println(result.Dictionary)
+    // fmt.Println(result.Dictionary)
+    // fmt.Println(result.ItemList)
 
-    // var expectedListLength = len(expectedList)
-    // var expectedDictLength = len(expectedDict)
-    // var expectedTotalCount = expectedListLength + expectedDictLength
-    //
-    // if expectedTotalCount > 0 {
-    //     assertion.IsTrue(result.HasAny(), "This should be found.")
-    // }
-    //
-    // assertion.Equals(
-    //     expectedTotalCount,
-    //     result.Count(),
-    //     "Total count",
-    // )
-    //
-    // assertion.Equals(
-    //     expectedListLength,
-    //     result.CountIndices(),
-    //     "Item-list count",
-    // )
-    //
-    // if expectedListLength > 0 {
-    //     for index = range expectedList {
-    //         actual   = result.Index(index)
-    //         expected = expectedList[index]
-    //
-    //         assertion.Equals(
-    //             expected,
-    //             *actual,
-    //             fmt.Sprintf("List#%d", index),
-    //         )
-    //     }
-    // }
-    //
-    // assertion.Equals(
-    //     expectedDictLength,
-    //     result.CountKeys(),
-    //     "Dictionary count",
-    // )
-    //
-    // if expectedDictLength > 0 {
-    //     for key, expected = range expectedDict {
-    //         actual = result.Key(key)
-    //
-    //         assertion.Equals(
-    //             expected,
-    //             *actual,
-    //             fmt.Sprintf("Dictionary[%s]", key),
-    //         )
-    //     }
-    // }
+    var expectedListLength = len(expectedList)
+    var expectedDictLength = len(expectedDict)
+    var expectedTotalCount = expectedListLength + expectedDictLength
+
+    if expectedTotalCount > 0 {
+        assertion.IsTrue(result.HasAny(), "This should be found.")
+    }
+
+    assertion.Equals(
+        expectedTotalCount,
+        result.Count(),
+        "Total count",
+    )
+
+    assertion.Equals(
+        expectedListLength,
+        result.CountIndices(),
+        "Item-list count",
+    )
+
+    if expectedListLength > 0 {
+        for index = range expectedList {
+            actualL  = result.Index(index)
+            expected = expectedList[index]
+
+            assertion.Equals(
+                expected,
+                *actualL,
+                fmt.Sprintf("List#%d", index),
+            )
+        }
+    }
+
+    assertion.Equals(
+        expectedDictLength,
+        result.CountKeys(),
+        "Dictionary count",
+    )
+
+    if expectedDictLength > 0 {
+        for key, expecteds = range expectedDict {
+            actuals = result.Key(key)
+
+            assertion.Equals(
+                expecteds[0],
+                (*actuals)[0],
+                fmt.Sprintf("Dictionary[%s]", key),
+            )
+        }
+    }
 }
 
 func TestReSearchOneBasic(t *testing.T) {
@@ -191,12 +195,19 @@ func TestReSearchOneAdvanced(t *testing.T) {
 }
 
 func TestReSearchAll(t *testing.T) {
-    var pattern = "<(?P<name>[^>]+)>"
+    var pattern = "<(?P<a>[^>]+)>/<(?P<b>[^>]+)>"
     var sample  = "/api/v1/<abc>/<def>"
 
     localTestReSearchAll(
         t,
         pattern,
         sample,
+        []string{
+            "<abc>/<def>",
+        },
+        map[string][]string{
+            "a": []string{ "abc" },
+            "b": []string{ "def" },
+        },
     )
 }

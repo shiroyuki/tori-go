@@ -22,9 +22,6 @@ func (self *Expression) SearchAll(content string) MultipleResult {
     var cursor     SingleResult
     var itemList   []string
     var dictionary map[string][]string
-    var completeMatchIncluded bool
-
-    completeMatchIncluded = false
 
     matches := self.Internal.FindAllStringSubmatch(content, -1)
 
@@ -33,25 +30,17 @@ func (self *Expression) SearchAll(content string) MultipleResult {
     for i := range matches {
         cursor = self.makeSingleResult(matches[i])
 
-        if !completeMatchIncluded {
-            if itemList == nil {
-                itemList = cursor.ItemList
-            } else {
-                itemList = self.combineList(itemList, cursor.ItemList)
-            }
+        if itemList == nil {
+            itemList = cursor.ItemList
         } else {
-            if itemList == nil {
-                itemList = cursor.ItemList[1:]
-            } else {
-                itemList = self.combineList(itemList, cursor.ItemList[1:])
-            }
+            itemList = self.combineList(itemList, cursor.ItemList)
         }
 
         for k, v := range cursor.Dictionary {
             _, ok := dictionary[k]
 
             if !ok {
-                dictionary[k] = make([]string, 1)
+                dictionary[k] = make([]string, 0)
             }
 
             dictionary[k] = append(dictionary[k], v)
