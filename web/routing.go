@@ -53,7 +53,7 @@ func (self *Route) GetCompiledPattern() *tori_re.Expression {
     }
 
     // Handle a reversible route.
-    simpleRoutingPattern.Search(self.Pattern)
+    simpleRoutingPattern.SearchAll(self.Pattern)
 
     return self.RePattern
 }

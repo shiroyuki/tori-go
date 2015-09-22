@@ -1,48 +1,8 @@
 // Package re provides a simplified Regular Expression class
-package re
+package re // TODO rename this file to expression.go
 
 import "fmt" // for debugging
 import "regexp"
-
-type Result struct {
-    ItemList   []string
-    Dictionary map[string]string
-}
-
-func NewResult(items []string, dictionary map[string]string) Result {
-    return Result{
-        ItemList:   items,
-        Dictionary: dictionary,
-    }
-}
-
-func (self *Result) Index(i int) *string {
-    value := self.ItemList[i]
-
-    return &value
-}
-
-func (self *Result) Key(k string) *string {
-    value := self.Dictionary[k]
-
-    return &value
-}
-
-func (self *Result) HasAny() bool {
-    return self.Count() > 0
-}
-
-func (self *Result) Count() int {
-    return self.CountIndices() + self.CountKeys()
-}
-
-func (self *Result) CountIndices() int {
-    return len(self.ItemList)
-}
-
-func (self *Result) CountKeys() int {
-    return len(self.Dictionary)
-}
 
 type Expression struct {
     Internal *regexp.Regexp
@@ -52,7 +12,7 @@ func Compile(pattern string) Expression {
     return Expression{regexp.MustCompile(pattern)}
 }
 
-func (self *Expression) Search(content string) Result {
+func (self *Expression) SearchOne(content string) SingleResult {
     var itemList   []string
     var nextIndex  int
     var dictionary map[string]string
@@ -66,7 +26,7 @@ func (self *Expression) Search(content string) Result {
     fmt.Println(content, matches)
 
     if len(matches) == 0 {
-        return NewResult(itemList, dictionary)
+        return NewSingleResult(itemList, dictionary)
     }
 
     for i, name := range self.Internal.SubexpNames() {
@@ -87,8 +47,14 @@ func (self *Expression) Search(content string) Result {
 
     fmt.Println(itemList[:nextIndex], dictionary)
 
-    return NewResult(
+    return NewSingleResult(
         itemList[:nextIndex], // minimize the memory usage by trimming itemList.
         dictionary,
     )
+}
+
+func (self *Expression) SearchAll(content string) *MultipleResult {
+    //matches := self.Internal.FindAllStringSubmatch(content, -1)
+
+    return nil
 }

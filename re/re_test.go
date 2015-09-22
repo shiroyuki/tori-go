@@ -4,7 +4,7 @@ import "fmt"
 import "testing"
 import "../tameshigiri"
 
-func localTestReSearch(
+func localTestReSearchOne(
     t            *testing.T,
     pattern      string,
     sample       string,
@@ -18,7 +18,7 @@ func localTestReSearch(
 
     var assertion = tameshigiri.NewAssertion(t)
     var compiled  = Compile(pattern)
-    var result    = compiled.Search(sample)
+    var result    = compiled.SearchOne(sample)
 
     var expectedListLength = len(expectedList)
     var expectedDictLength = len(expectedDict)
@@ -72,8 +72,8 @@ func localTestReSearch(
     }
 }
 
-func TestReSearchBasic(t *testing.T) {
-    localTestReSearch(
+func TestReSearchOneBasic(t *testing.T) {
+    localTestReSearchOne(
         t,
         "shiroyuki",
         "user-01-shiroyuki-as-admin",
@@ -82,10 +82,10 @@ func TestReSearchBasic(t *testing.T) {
     )
 }
 
-func TestReSearchAdvanced(t *testing.T) {
+func TestReSearchOneAdvanced(t *testing.T) {
     var testPattern = "(/api)?/users/(?P<key>[^/]+)"
 
-    localTestReSearch(
+    localTestReSearchOne(
         t,
         testPattern,
         "/users",
@@ -93,7 +93,7 @@ func TestReSearchAdvanced(t *testing.T) {
         make(map[string]string, 0),
     )
 
-    localTestReSearch(
+    localTestReSearchOne(
         t,
         testPattern,
         "/users/shiroyuki",
@@ -106,7 +106,7 @@ func TestReSearchAdvanced(t *testing.T) {
         },
     )
 
-    localTestReSearch(
+    localTestReSearchOne(
         t,
         testPattern,
         "/api/users/shiroyuki",
