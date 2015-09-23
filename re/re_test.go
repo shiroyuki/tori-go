@@ -91,8 +91,8 @@ func localTestReSearchAll(
     var compiled  = Compile(pattern)
     var result    = compiled.SearchAll(sample)
 
-    // fmt.Println(result.Dictionary)
-    // fmt.Println(result.ItemList)
+    //fmt.Println(result.Dictionary)
+    //fmt.Println(result.ItemList)
 
     var expectedListLength = len(expectedList)
     var expectedDictLength = len(expectedDict)
@@ -137,11 +137,13 @@ func localTestReSearchAll(
         for key, expecteds = range expectedDict {
             actuals = result.Key(key)
 
-            assertion.Equals(
-                expecteds[0],
-                (*actuals)[0],
-                fmt.Sprintf("Dictionary[%s]", key),
-            )
+            for index = range expecteds {
+                assertion.Equals(
+                    expecteds[index],
+                    (*actuals)[index],
+                    fmt.Sprintf("Dictionary[%s][%d]", key, index),
+                )
+            }
         }
     }
 }
@@ -194,7 +196,7 @@ func TestReSearchOneAdvanced(t *testing.T) {
     )
 }
 
-func TestReSearchAll(t *testing.T) {
+func TestReSearchAll1(t *testing.T) {
     var pattern = "<(?P<a>[^>]+)>/<(?P<b>[^>]+)>"
     var sample  = "/api/v1/<abc>/<def>"
 
@@ -208,6 +210,24 @@ func TestReSearchAll(t *testing.T) {
         map[string][]string{
             "a": []string{ "abc" },
             "b": []string{ "def" },
+        },
+    )
+}
+
+func TestReSearchAll2(t *testing.T) {
+    var pattern = "<(?P<k>[^>]+)>"
+    var sample  = "/api/v1/<abc>/<def>"
+
+    localTestReSearchAll(
+        t,
+        pattern,
+        sample,
+        []string{
+            "<abc>",
+            "<def>",
+        },
+        map[string][]string{
+            "k": []string{ "abc", "def" },
         },
     )
 }

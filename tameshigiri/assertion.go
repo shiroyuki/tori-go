@@ -31,11 +31,11 @@ func (self *Assertion) IsTrue(result bool, description string) bool {
     NumberOfProcessedAssertion += 1
 
     if !result {
-        self.T.Fail()
-
         if self.stackDumpEnabled {
             self.T.Logf("#%d FAILED\n", NumberOfProcessedAssertion)
             self.T.Logf("#%d %s\n", NumberOfProcessedAssertion, description)
+
+            self.T.FailNow()
         }
 
         return false
@@ -61,7 +61,15 @@ func (self *Assertion) Equals(expected interface{}, actual interface{}, descript
 
     yes = self.IsTrue(expected == actual, "")
 
-    if stackDumpEnabled && !yes {
+    if stackDumpEnabled {
+        self.EnableStackDump()
+    }
+
+    if yes {
+        return true
+    }
+
+    if stackDumpEnabled {
         self.T.Logf("#%d FAILED\n", NumberOfProcessedAssertion)
         self.T.Logf("#%d %s\n", NumberOfProcessedAssertion, description)
 
@@ -69,13 +77,13 @@ func (self *Assertion) Equals(expected interface{}, actual interface{}, descript
 
         self.T.Log(prefix, "Expected:", expected)
         self.T.Log(prefix, "Given:", actual)
+
+        self.dumpStack()
+
+        self.T.FailNow()
     }
 
-    if stackDumpEnabled {
-        self.EnableStackDump()
-    }
-
-    return yes
+    return false
 }
 
 // Enable stack dump

@@ -91,14 +91,17 @@ func (self *Expression) makeSingleResult(matches []string) SingleResult {
 
 func (self *Expression) combineList(a []string, b[]string) []string {
     var i int
+    var j int = 0
     var c = make([]string, len(a) + len(b))
 
     for i = range a {
-        c = append(c, a[i])
+        c[j] = a[i]
+        j += 1
     }
 
     for i = range b {
-        c = append(c, b[i])
+        c[j] = b[i]
+        j += 1
     }
 
     return c
