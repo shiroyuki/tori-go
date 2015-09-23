@@ -61,8 +61,6 @@ func TestWebRoutingReversibleRouteGetCompiledPatternFailed(t *testing.T) {
 
     assertion.IsTrue(compiled == nil, "The pattern should not be compiled.")
     assertion.IsTrue(err      != nil, "An error should be raised.")
-
-    //assertion.IsTrue(compiled == nil, "Unexpected compiled pattern")
 }
 
 func TestWebRoutingNonReversibleRouteGetCompiledPattern(t *testing.T) {

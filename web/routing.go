@@ -15,6 +15,8 @@ package web
 
 import tori_re "../re"
 
+var toriWebRoutingSimplePattern = tori_re.Compile("<(?P<key>[^>]+)>")
+
 type Route struct {
     Pattern    string
     Reversible bool
@@ -50,13 +52,15 @@ func (self *Route) GetCompiledPattern() (*tori_re.Expression, error) {
     return self.compileReversiblePattern()
 }
 
+//func (self *Route) Reverse(context map[string]string) (string, error) {
+
+//}
+
 func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
     var compiled             tori_re.Expression
-    var simpleRoutingPattern tori_re.Expression
     var alternativePattern   string
 
-    simpleRoutingPattern = tori_re.Compile("<(?P<key>[^>]+)>")
-    matches := simpleRoutingPattern.SearchAll(self.Pattern)
+    matches := toriWebRoutingSimplePattern.SearchAll(self.Pattern)
 
     if matches.HasAny() {
         values := matches.Key("key")
@@ -71,7 +75,7 @@ func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
         }
     }
 
-    alternativePattern = simpleRoutingPattern.ReplaceAll(self.Pattern, "(?P<${key}>[^/]+)")
+    alternativePattern = toriWebRoutingSimplePattern.ReplaceAll(self.Pattern, "(?P<${key}>[^/]+)")
 
     compiled       = tori_re.Compile(alternativePattern)
     self.RePattern = &compiled
