@@ -36,24 +36,54 @@ func NewRoute(pattern string, reversible bool) Route {
     return route
 }
 
-func (self *Route) GetCompiledPattern() *tori_re.Expression {
-    var compiled             tori_re.Expression
-    var simpleRoutingPattern tori_re.Expression
-
+func (self *Route) GetCompiledPattern() (*tori_re.Expression, error) {
     if self.RePattern != nil {
-        return self.RePattern
+        return self.RePattern, nil
     }
 
     // Handle a non-reversible route.
     if (!self.Reversible) {
-        compiled = tori_re.Compile(self.Pattern)
-        self.RePattern = &compiled
-
-        return self.RePattern
+        return self.compileNonReversiblePattern(), nil
     }
 
     // Handle a reversible route.
-    simpleRoutingPattern.SearchAll(self.Pattern)
+    return self.compileReversiblePattern()
+}
+
+func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
+    var compiled             tori_re.Expression
+    var simpleRoutingPattern tori_re.Expression
+    var alternativePattern   string
+
+    simpleRoutingPattern = tori_re.Compile("<(?P<key>[^>]+)>")
+    matches := simpleRoutingPattern.SearchAll(self.Pattern)
+
+    if matches.HasAny() {
+        values := matches.Key("key")
+
+        for _, key := range *values {
+            spotCheckPattern := tori_re.Compile("<" + key + ">")
+            spotCheckMatches := spotCheckPattern.SearchAll(self.Pattern)
+
+            if spotCheckMatches.CountIndices() > 1 {
+                return nil, RouteWithDuplicatedKeyError
+            }
+        }
+    }
+
+    alternativePattern = simpleRoutingPattern.ReplaceAll(self.Pattern, "(?P<${key}>[^/]+)")
+
+    compiled       = tori_re.Compile(alternativePattern)
+    self.RePattern = &compiled
+
+    return self.RePattern, nil
+}
+
+func (self *Route) compileNonReversiblePattern() *tori_re.Expression {
+    var compiled tori_re.Expression
+
+    compiled       = tori_re.Compile(self.Pattern)
+    self.RePattern = &compiled
 
     return self.RePattern
 }

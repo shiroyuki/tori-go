@@ -50,6 +50,13 @@ func (self *Expression) SearchAll(content string) MultipleResult {
     return NewMultipleResult(itemList, dictionary)
 }
 
+// Replace all matches with the given replacement.
+//
+// This is a simple proxy to Regexp.ReplaceAllString. No test required.
+func (self *Expression) ReplaceAll(content string, replacement string) string {
+    return self.Internal.ReplaceAllString(content, replacement)
+}
+
 func (self *Expression) makeSingleResult(matches []string) SingleResult {
     var itemList   []string
     var nextIndex  int

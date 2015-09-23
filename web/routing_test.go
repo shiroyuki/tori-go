@@ -31,20 +31,38 @@ func TestWebRoutingRouteNewRouteNormal(t *testing.T) {
     localTestWebRoutingRouteNewRoute(t, "/", false)
 }
 
-func TestWebRoutingReversibleRouteGetCompiledPattern(t *testing.T) {
-    t.Skip()
+func TestWebRoutingReversibleRouteGetCompiledPatternOkay(t *testing.T) {
     var assertion    tameshigiri.Assertion
     var givenPattern string
     var newRoute     Route
 
     assertion = tameshigiri.NewAssertion(t)
 
-    givenPattern = "/user/{alias}"
+    givenPattern = "/user/<alias>"
     newRoute     = NewRoute(givenPattern, true)
 
-    compiled := newRoute.GetCompiledPattern()
+    compiled, err := newRoute.GetCompiledPattern()
 
     assertion.IsTrue(compiled != nil, "Unexpected compiled pattern")
+    assertion.IsTrue(err      == nil, "No error raised")
+}
+
+func TestWebRoutingReversibleRouteGetCompiledPatternFailed(t *testing.T) {
+    var assertion    tameshigiri.Assertion
+    var givenPattern string
+    var newRoute     Route
+
+    assertion = tameshigiri.NewAssertion(t)
+
+    givenPattern = "/user/<alias>/<alias>"
+    newRoute     = NewRoute(givenPattern, true)
+
+    compiled, err := newRoute.GetCompiledPattern()
+
+    assertion.IsTrue(compiled == nil, "The pattern should not be compiled.")
+    assertion.IsTrue(err      != nil, "An error should be raised.")
+
+    //assertion.IsTrue(compiled == nil, "Unexpected compiled pattern")
 }
 
 func TestWebRoutingNonReversibleRouteGetCompiledPattern(t *testing.T) {
@@ -57,5 +75,8 @@ func TestWebRoutingNonReversibleRouteGetCompiledPattern(t *testing.T) {
     givenPattern = "/user/(?P<alias>[^/]+)"
     newRoute     = NewRoute(givenPattern, false)
 
-    assertion.IsTrue(newRoute.GetCompiledPattern() != nil, "Unexpected compiled pattern")
+    compiled, err := newRoute.GetCompiledPattern()
+
+    assertion.IsTrue(compiled != nil, "Unexpected compiled pattern")
+    assertion.IsTrue(err      == nil, "No error raised")
 }
