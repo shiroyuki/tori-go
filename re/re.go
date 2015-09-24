@@ -8,8 +8,8 @@ type Expression struct {
     Internal *regexp.Regexp
 }
 
-func Compile(pattern string) Expression {
-    return Expression{regexp.MustCompile(pattern)}
+func Compile(pattern string) *Expression {
+    return &Expression{regexp.MustCompile(pattern)}
 }
 
 func (self *Expression) SearchOne(content string) SingleResult {

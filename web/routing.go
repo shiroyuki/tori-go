@@ -53,8 +53,7 @@ func (self *Route) GetCompiledPattern() (*tori_re.Expression, error) {
 }
 
 func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
-    var compiled             tori_re.Expression
-    var alternativePattern   string
+    var alternativePattern string
 
     matches := toriWebRoutingSimplePattern.SearchAll(self.Pattern)
 
@@ -72,18 +71,13 @@ func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
     }
 
     alternativePattern = toriWebRoutingSimplePattern.ReplaceAll(self.Pattern, "(?P<${key}>[^/]+)")
-
-    compiled       = tori_re.Compile(alternativePattern)
-    self.RePattern = &compiled
+    self.RePattern     = tori_re.Compile(alternativePattern)
 
     return self.RePattern, nil
 }
 
 func (self *Route) compileNonReversiblePattern() *tori_re.Expression {
-    var compiled tori_re.Expression
-
-    compiled       = tori_re.Compile(self.Pattern)
-    self.RePattern = &compiled
+    self.RePattern = tori_re.Compile(self.Pattern)
 
     return self.RePattern
 }
