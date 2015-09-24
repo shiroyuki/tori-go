@@ -24,7 +24,7 @@ type Route struct {
 }
 
 // Create a route.
-func NewRoute(pattern string, reversible bool) Route {
+func NewRoute(pattern string, reversible bool) *Route {
     var route Route
 
     // TODO add the assertion to check if the pattern has a prefix "/". Raise exceptions if necessary.
@@ -35,7 +35,7 @@ func NewRoute(pattern string, reversible bool) Route {
         RePattern:  nil, // This is lazy-loading.
     }
 
-    return route
+    return &route
 }
 
 func (self *Route) GetCompiledPattern() (*tori_re.Expression, error) {
@@ -51,10 +51,6 @@ func (self *Route) GetCompiledPattern() (*tori_re.Expression, error) {
     // Handle a reversible route.
     return self.compileReversiblePattern()
 }
-
-//func (self *Route) Reverse(context map[string]string) (string, error) {
-
-//}
 
 func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
     var compiled             tori_re.Expression

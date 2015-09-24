@@ -2,7 +2,10 @@ package web
 
 import "net/http"
 
-type RequestHandler interface {
-    Initialize(w http.ResponseWriter, r *http.Request)
-    Write(content []byte)
+type Handler struct {
+    //
 }
+
+func (self *Handler) Initialize(w http.ResponseWriter, r *http.Request) {}
+
+func (self *Handler) Write(content []byte) {}

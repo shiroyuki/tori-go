@@ -5,7 +5,7 @@ import "../tameshigiri"
 
 func localTestWebRoutingRouteNewRoute(t *testing.T, givenPattern string, reversible bool) {
     var assertion tameshigiri.Assertion
-    var newRoute  Route
+    var newRoute  *Route
 
     assertion = tameshigiri.NewAssertion(t)
     newRoute  = NewRoute(givenPattern, reversible)
@@ -34,7 +34,7 @@ func TestWebRoutingRouteNewRouteNormal(t *testing.T) {
 func TestWebRoutingReversibleRouteGetCompiledPatternOkay(t *testing.T) {
     var assertion    tameshigiri.Assertion
     var givenPattern string
-    var newRoute     Route
+    var newRoute     *Route
 
     assertion = tameshigiri.NewAssertion(t)
 
@@ -50,7 +50,7 @@ func TestWebRoutingReversibleRouteGetCompiledPatternOkay(t *testing.T) {
 func TestWebRoutingReversibleRouteGetCompiledPatternFailed(t *testing.T) {
     var assertion    tameshigiri.Assertion
     var givenPattern string
-    var newRoute     Route
+    var newRoute     *Route
 
     assertion = tameshigiri.NewAssertion(t)
 
@@ -66,7 +66,7 @@ func TestWebRoutingReversibleRouteGetCompiledPatternFailed(t *testing.T) {
 func TestWebRoutingNonReversibleRouteGetCompiledPattern(t *testing.T) {
     var assertion    tameshigiri.Assertion
     var givenPattern string
-    var newRoute     Route
+    var newRoute     *Route
 
     assertion = tameshigiri.NewAssertion(t)
 
