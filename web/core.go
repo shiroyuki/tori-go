@@ -10,14 +10,14 @@ import tori  "../"
 import tori_cache  "../cache"
 
 type Core struct { // implements http.Handler
-    Cache      tori_cache.Driver
-    Enigma     tori.Enigma
+    Cache      *tori_cache.Driver
+    Enigma     *tori.Enigma
     Compressed bool
 }
 
 func NewCore(
-    cache      tori_cache.Driver,
-    enigma     tori.Enigma,
+    cache      *tori_cache.Driver,
+    enigma     *tori.Enigma,
     compressed bool,
 ) Core {
     return Core{

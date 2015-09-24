@@ -13,7 +13,7 @@
 //      requestPath := route.For(params) // expected: /user/shiroyuki
 package web
 
-import tori_re "../re"
+import tori_re "../../re"
 
 var toriWebRoutingSimplePattern = tori_re.Compile("<(?P<key>[^>]+)>")
 
