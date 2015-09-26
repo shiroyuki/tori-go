@@ -1,4 +1,4 @@
-// Routing collection
+// Package routing to manage request routes and deliver request to a corresponding handler.
 //
 // There are two types of routes in Tori Framework: reversible and non-reversible.
 // The reversible one can be use to with other classes to re-create the route that
@@ -11,7 +11,7 @@
 //      }
 //
 //      requestPath := route.For(params) // expected: /user/shiroyuki
-package web
+package routing
 
 import tori_re "../../re"
 

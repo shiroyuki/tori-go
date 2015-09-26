@@ -1,4 +1,4 @@
-package web
+package routing
 
 import "testing"
 import "../../tameshigiri"

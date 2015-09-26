@@ -1,11 +1,20 @@
 package web
 
 import "net/http"
+import "../re"
 
 type Handler struct {
-    //
+    Response   *http.ResponseWriter
+    Request    *http.Request
+    Parameters *re.MultipleResult
 }
 
-func (self *Handler) Initialize(w http.ResponseWriter, r *http.Request) {}
+func NewHandler(w *http.ResponseWriter, r *http.Request, p *re.MultipleResult) *Handler {
+    handler := &Handler{
+        Response:   w,
+        Request:    r,
+        Parameters: p,
+    }
 
-func (self *Handler) Write(content []byte) {}
+    return handler
+}
