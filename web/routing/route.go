@@ -13,32 +13,33 @@
 //      requestPath := route.For(params) // expected: /user/shiroyuki
 package routing
 
-import tori_re "../../re"
+import re "../../re"
 
-var toriWebRoutingSimplePattern = tori_re.Compile("<(?P<key>[^>]+)>")
+var toriWebRoutingSimplePattern = re.Compile("<(?P<key>[^>]+)>")
 
 type Route struct {
+    Id         string
+    Method     string
     Pattern    string
+    RePattern  *re.Expression
+    Handler    Action
     Reversible bool
-    RePattern  *tori_re.Expression
+    Cacheable  bool
 }
 
 // Create a route.
 func NewRoute(pattern string, reversible bool) *Route {
-    var route Route
-
     // TODO add the assertion to check if the pattern has a prefix "/". Raise exceptions if necessary.
 
-    route = Route{
+    return &Route{
         Pattern:    pattern,
         Reversible: reversible,
-        RePattern:  nil, // This is lazy-loading.
+        RePattern:  nil,   // This is lazy-loading.
+        Cacheable:  false, // By default, no response is cacheable.
     }
-
-    return &route
 }
 
-func (self *Route) GetCompiledPattern() (*tori_re.Expression, error) {
+func (self *Route) GetCompiledPattern() (*re.Expression, error) {
     if self.RePattern != nil {
         return self.RePattern, nil
     }
@@ -52,7 +53,7 @@ func (self *Route) GetCompiledPattern() (*tori_re.Expression, error) {
     return self.compileReversiblePattern()
 }
 
-func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
+func (self *Route) compileReversiblePattern() (*re.Expression, error) {
     var alternativePattern string
 
     matches := toriWebRoutingSimplePattern.SearchAll(self.Pattern)
@@ -61,7 +62,7 @@ func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
         values := matches.Key("key")
 
         for _, key := range *values {
-            spotCheckPattern := tori_re.Compile("<" + key + ">")
+            spotCheckPattern := re.Compile("<" + key + ">")
             spotCheckMatches := spotCheckPattern.SearchAll(self.Pattern)
 
             if spotCheckMatches.CountIndices() > 1 {
@@ -71,13 +72,13 @@ func (self *Route) compileReversiblePattern() (*tori_re.Expression, error) {
     }
 
     alternativePattern = toriWebRoutingSimplePattern.ReplaceAll(self.Pattern, "(?P<${key}>[^/]+)")
-    self.RePattern     = tori_re.Compile(alternativePattern)
+    self.RePattern     = re.Compile(alternativePattern)
 
     return self.RePattern, nil
 }
 
-func (self *Route) compileNonReversiblePattern() *tori_re.Expression {
-    self.RePattern = tori_re.Compile(self.Pattern)
+func (self *Route) compileNonReversiblePattern() *re.Expression {
+    self.RePattern = re.Compile(self.Pattern)
 
     return self.RePattern
 }

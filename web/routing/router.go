@@ -1,41 +1,41 @@
 package routing
 
-import web "../"
-
-type Action func(h *web.Handler)
-
 type Router struct {
-    // the method-to-route-to-handler map
-    HandlerMap map[string]map[string]Action
-
-    // the route pattern-to-object map
-    ReferenceMap map[string](*Route)
+    PriorityList *RecordList
+    // the route id-to-route map
+    IdToRouteMap map[string](*Route)
 }
 
 func NewRouter() *Router {
-    hMap := make(map[string]map[string]Action)
-    rMap := make(map[string]*Route)
+    priorityList := &RecordList{}
+    idToRouteMap := make(map[string]*Route)
 
     return &Router{
-        HandlerMap:   hMap,
-        ReferenceMap: rMap,
+        PriorityList: priorityList,
+        IdToRouteMap: idToRouteMap,
     }
 }
 
-func (self *Router) AddRoute(method string, pattern string, handler Action, reversible bool) {
-    var route *Route
-
-    route, ok := self.ReferenceMap[pattern]
+func (self *Router) AddRoute(
+    id         string,
+    method     string,
+    pattern    string,
+    handler    Action,
+    reversible bool,
+    cacheable  bool,
+) {
+    _, ok := self.IdToRouteMap[pattern]
 
     if !ok {
         route := NewRoute(pattern, reversible)
 
-        self.ReferenceMap[pattern] = route
+        self.IdToRouteMap[pattern] = route
     }
 
-    self.HandlerMap[method][route.Pattern] = handler
-}
-
-func (self *Router) AddSimpleRoute(method string, pattern string, handler Action) {
-    self.AddRoute(method, pattern, handler, true)
+    self.PriorityList.Append(&Record{
+        Id:        id,
+        Method:    method,
+        Handler:   handler,
+        Cacheable: cacheable,
+    })
 }
