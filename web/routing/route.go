@@ -13,6 +13,7 @@
 //      requestPath := route.For(params) // expected: /user/shiroyuki
 package routing
 
+import "net/http"
 import re "../../re"
 
 var toriWebRoutingSimplePattern = re.Compile("<(?P<key>[^>]+)>")
@@ -51,6 +52,22 @@ func (self *Route) GetCompiledPattern() (*re.Expression, error) {
 
     // Handle a reversible route.
     return self.compileReversiblePattern()
+}
+
+func (self *Route) Match(request *http.Request) (*re.MultipleResult) {
+    pattern, err := self.GetCompiledPattern()
+
+    if err != nil {
+        return nil
+    }
+
+    result := pattern.SearchAll(request.URL.Path)
+
+    if result.Count() == 0 {
+        return nil
+    }
+
+    return &result
 }
 
 func (self *Route) compileReversiblePattern() (*re.Expression, error) {
