@@ -1,5 +1,9 @@
-// package web to manage request routes and deliver request to a corresponding handler.
-//
+package web
+
+import "../re"
+
+var toriWebRoutingSimplePattern = re.Compile("<(?P<key>[^>]+)>")
+
 // There are two types of routes in Tori Framework: reversible and non-reversible.
 // The reversible one can be use to with other classes to re-create the route that
 // refers to the given one. For example:
@@ -11,12 +15,6 @@
 //      }
 //
 //      requestPath := route.For(params) // expected: /user/shiroyuki
-package web
-
-import "../re"
-
-var toriWebRoutingSimplePattern = re.Compile("<(?P<key>[^>]+)>")
-
 type Route struct {
     Id         string
     Method     string

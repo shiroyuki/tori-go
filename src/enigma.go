@@ -1,4 +1,3 @@
-// Basic go-to collection for cryptography and encoding.
 package tori
 
 import (
@@ -13,6 +12,8 @@ import (
 )
 
 // Enigma - Wrapper to Cryptographer and Hasher
+//
+// Basic go-to collection for cryptography and encoding.
 type Enigma struct {
     h hash.Hash
 }
