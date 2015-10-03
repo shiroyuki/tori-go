@@ -1,4 +1,4 @@
-// Package routing to manage request routes and deliver request to a corresponding handler.
+// package web to manage request routes and deliver request to a corresponding handler.
 //
 // There are two types of routes in Tori Framework: reversible and non-reversible.
 // The reversible one can be use to with other classes to re-create the route that
@@ -11,10 +11,9 @@
 //      }
 //
 //      requestPath := route.For(params) // expected: /user/shiroyuki
-package routing
+package web
 
-import "net/http"
-import re "../../re"
+import "../re"
 
 var toriWebRoutingSimplePattern = re.Compile("<(?P<key>[^>]+)>")
 
@@ -54,16 +53,16 @@ func (self *Route) GetCompiledPattern() (*re.Expression, error) {
     return self.compileReversiblePattern()
 }
 
-func (self *Route) Match(request *http.Request) (*re.MultipleResult) {
+func (self *Route) Match(method string, path string) (*re.MultipleResult) {
     pattern, err := self.GetCompiledPattern()
 
     if err != nil {
         return nil
     }
 
-    result := pattern.SearchAll(request.URL.Path)
+    result := pattern.SearchAll(path)
 
-    if result.Count() == 0 {
+    if self.Method != method || !result.HasAny() {
         return nil
     }
 

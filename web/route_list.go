@@ -1,9 +1,12 @@
-package routing
+package web
+
+import re "../re"
 
 type Record struct {
     Id        string
     Method    string
-    Handler   Action
+    Route     *Route
+    Action    *Action
     Cacheable bool
     Previous  *Record
     Next      *Record
@@ -25,7 +28,7 @@ func (self *RecordList) Append(record *Record) {
     cursor = self.head
 
     // Iterate all the way to the tail of the list.
-    for cursor.Next != nil {
+    for cursor != nil && cursor.Next != nil {
         var detachAndAppend = (cursor.Id == record.Id && cursor.Method == record.Method)
 
         // When the new record is referred to the same ID and method, the record
@@ -45,9 +48,22 @@ func (self *RecordList) Append(record *Record) {
         }
     }
 
+    // Assign a new records.
     cursor.Next = record
 }
 
-func (self *RecordList) Search(requestPath string) *Record {
-    return nil
+func (self *RecordList) Find(method string, path string) (*Record, *re.MultipleResult) {
+    var cursor *Record = self.head
+
+    for cursor != nil && cursor.Next != nil {
+        matches := cursor.Route.Match(method, path)
+
+        if matches != nil {
+            return cursor, matches
+        }
+
+        cursor = cursor.Next
+    }
+
+    return nil, nil
 }

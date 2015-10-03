@@ -1,6 +1,6 @@
 GCC_GO=GOPATH=`pwd` go
 GCC_GO_TEST=${GCC_GO} test
-TEST_PATHS=./tameshigiri ./cache ./re ./web ./web/routing .
+TEST_PATHS=./tameshigiri ./cache ./re ./web .
 
 test:
 	${GCC_GO_TEST} ${TEST_PATHS}

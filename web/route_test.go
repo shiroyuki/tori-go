@@ -1,7 +1,7 @@
-package routing
+package web
 
 import "testing"
-import "../../tameshigiri"
+import "../tameshigiri"
 
 func localTestWebRoutingRouteNewRoute(t *testing.T, givenPattern string, reversible bool) {
     var assertion tameshigiri.Assertion

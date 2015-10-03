@@ -1,4 +1,4 @@
-package routing
+package web
 
 // TODO add test after tori.web.Handler
 

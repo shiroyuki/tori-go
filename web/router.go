@@ -1,4 +1,6 @@
-package routing
+package web
+
+import "../re"
 
 type Router struct {
     PriorityList *RecordList
@@ -20,7 +22,7 @@ func (self *Router) AddRoute(
     id         string,
     method     string,
     pattern    string,
-    handler    Action,
+    action     Action,
     reversible bool,
     cacheable  bool,
 ) {
@@ -35,7 +37,13 @@ func (self *Router) AddRoute(
     self.PriorityList.Append(&Record{
         Id:        id,
         Method:    method,
-        Handler:   handler,
+        Action:    &action,
         Cacheable: cacheable,
     })
+}
+
+func (self *Router) Find(method string, path string) (*Record, *re.MultipleResult) {
+    r, p := self.PriorityList.Find(method, path)
+
+    return r, p
 }
