@@ -13,6 +13,21 @@ type Core struct { // implements http.Handler
     Compressed bool
 }
 
+// Create a core of the web framework with everything pre-configured for development.
+func NewSimpleCore() *Core {
+    var enigma = tori.Enigma{}
+    var router = NewRouter()
+    var actualCacheDriver = cache.NewInMemoryCacheDriver(&enigma, false)
+    var castedCacheDriver = cache.Driver(actualCacheDriver)
+
+    return NewCore(
+        router,
+        &castedCacheDriver,
+        &enigma,
+        false,
+    )
+}
+
 func NewCore(
     router     *Router,
     cache      *cache.Driver,
