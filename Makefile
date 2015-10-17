@@ -14,6 +14,10 @@ full_test: install_deps
 install_deps:
 	@echo "Installing dependencies..."
 	@mkdir -p ${GOPATH_DEPS}
-	${GCC_GO_GET} github.com/shiroyuki/tameshigiri
-	${GCC_GO_GET} github.com/shiroyuki/yotsuba-go
-	${GCC_GO_GET} github.com/shiroyuki/re
+	@${GCC_GO_GET} github.com/shiroyuki/tameshigiri
+	@${GCC_GO_GET} github.com/shiroyuki/yotsuba-go
+	@${GCC_GO_GET} github.com/shiroyuki/re
+
+quick_push: test
+	git commit -am "Quick updates"
+	git push

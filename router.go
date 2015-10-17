@@ -60,7 +60,7 @@ func (self *Router) Find(method string, path string) (*Record, *re.MultipleResul
     return r, p
 }
 
-func (self *Router) log(message) {
+func (self *Router) log(message string) {
     if !self.DebugMode {
         return
     }
