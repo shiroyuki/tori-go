@@ -30,14 +30,21 @@ func (self *Router) Handle(
     reversible bool,
     cacheable  bool,
 ) {
-    self.log(fmt.Sprintf("Preparing to handle route #%s (%s %s)", id, method, pattern))
+    var firstLine string = fmt.Sprintf("%s %s", method, pattern)
+    var logPrefix string = fmt.Sprintf("Route #%s (%s)", id, firstLine)
+
+    self.log(logPrefix + " Registering...")
 
     _, ok := self.IdToRouteMap[pattern]
 
     if !ok {
+        self.log(logPrefix + " Adding a new route...")
+
         route := NewRoute(pattern, reversible)
 
         self.IdToRouteMap[pattern] = route
+
+        self.log(logPrefix + " Added a new route.")
     }
 
     self.PriorityList.Append(&Record{
@@ -46,6 +53,8 @@ func (self *Router) Handle(
         Action:    &action,
         Cacheable: cacheable,
     })
+
+    self.log(logPrefix + " Registered.")
 }
 
 func (self *Router) OnGet(
