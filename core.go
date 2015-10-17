@@ -1,6 +1,7 @@
 // Core for web framework
 package tori
 
+import "log"
 import "net/http"
 import "github.com/shiroyuki/re"
 import yotsuba "github.com/shiroyuki/yotsuba-go"
@@ -9,6 +10,7 @@ type Core struct { // implements http.Handler
     Router     *Router
     Cache      *yotsuba.CacheDriver
     Enigma     *yotsuba.Enigma
+    Internal   *http.Server
     Compressed bool
 }
 
@@ -33,12 +35,21 @@ func NewCore(
     enigma     *yotsuba.Enigma,
     compressed bool,
 ) *Core {
-    return &Core{
+    appCore := Core{
         Router:     router,
         Cache:      cache,
         Enigma:     enigma,
         Compressed: compressed,
     }
+
+    internalServer := &http.Server{
+        Addr:    "0.0.0.0:8000",
+        Handler: &appCore,
+    }
+
+    appCore.Internal = internalServer
+
+    return &appCore
 }
 
 // Handle the request and delegate the request to a proper handler.
@@ -87,4 +98,13 @@ func (self *Core) response(handler *Handler) {
     handler.SetContentEncoding("gzip")
     handler.SetContentLength(len(compressed))
     (*handler.Response).Write(compressed)
+}
+
+func (self *Core) listen(address *string) {
+    if address != nil {
+        self.Internal.Addr = *address
+    }
+
+    log.Println("Listening at:", self.Internal.Addr)
+    log.Fatal("Terminated due to:", self.Internal.ListenAndServe())
 }
