@@ -1,11 +1,13 @@
 package tori
 
+import "log"
 import "github.com/shiroyuki/re"
 
 type Router struct {
     PriorityList *RecordList
     // the route id-to-route map
     IdToRouteMap map[string](*Route)
+    DebugMode    bool
 }
 
 func NewRouter() *Router {
@@ -15,6 +17,7 @@ func NewRouter() *Router {
     return &Router{
         PriorityList: priorityList,
         IdToRouteMap: idToRouteMap,
+        DebugMode:    false,
     }
 }
 
@@ -43,7 +46,17 @@ func (self *Router) Handle(
 }
 
 func (self *Router) Find(method string, path string) (*Record, *re.MultipleResult) {
+    if self.DebugMode {
+        log.Printf("Incomming request for %s %s\n", method, path)
+    }
+
     r, p := self.PriorityList.Find(method, path)
+
+    if self.DebugMode {
+        if r == nil {
+            log.Printf("Unable to find the request handler for %s %s\n", method, path)
+        }
+    }
 
     return r, p
 }

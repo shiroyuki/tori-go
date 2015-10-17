@@ -6,6 +6,8 @@ import "net/http"
 import "github.com/shiroyuki/re"
 import yotsuba "github.com/shiroyuki/yotsuba-go"
 
+serverSignature = "shiroyuki/tori-go/1.0"
+
 type Core struct { // implements http.Handler
     Router     *Router
     Cache      *yotsuba.CacheDriver
@@ -61,6 +63,8 @@ func (self *Core) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     var path   string = r.URL.Path
 
     routingRecord, parameters = self.Router.Find(method, path)
+
+    w.Header().Set("Server", serverSignature)
 
     if routingRecord == nil {
         w.WriteHeader(http.StatusNotFound)
