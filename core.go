@@ -80,7 +80,7 @@ func (self *Core) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     // TODO Event "web.handler.pre.<route_id>": allow flexible interceptions before processing requests.
 
-    action(handler)
+    (*action)(handler)
 
     // TODO Event "web.handler.post.<route_id>": allow flexible interceptions before processing requests.
 

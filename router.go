@@ -32,30 +32,28 @@ func (self *Router) Handle(
 ) {
     var firstLine string = fmt.Sprintf("%s %s", method, pattern)
     var logPrefix string = fmt.Sprintf("Route #%s (%s)", id, firstLine)
-    var newRecord Record
 
     self.log(logPrefix + " Registering...")
 
-    _, ok := self.IdToRouteMap[pattern]
+    route, ok := self.IdToRouteMap[pattern]
 
     if !ok {
         self.log(logPrefix + " Adding a new route...")
 
-        route := NewRoute(pattern, reversible)
+        route = NewRoute(pattern, reversible)
 
         self.IdToRouteMap[pattern] = route
 
         self.log(logPrefix + " Added a new route.")
     }
 
-    newRecord = Record{
+    self.PriorityList.Append(&Record{
         Id:        id,
+        Route:     route,
         Method:    method,
-        Action:    action,
+        Action:    &action,
         Cacheable: cacheable,
-    }
-
-    self.PriorityList.Append(&newRecord)
+    })
 
     self.log(logPrefix + " Registered.")
 }
