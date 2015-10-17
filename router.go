@@ -32,6 +32,7 @@ func (self *Router) Handle(
 ) {
     var firstLine string = fmt.Sprintf("%s %s", method, pattern)
     var logPrefix string = fmt.Sprintf("Route #%s (%s)", id, firstLine)
+    var newRecord Record
 
     self.log(logPrefix + " Registering...")
 
@@ -47,12 +48,14 @@ func (self *Router) Handle(
         self.log(logPrefix + " Added a new route.")
     }
 
-    self.PriorityList.Append(&Record{
+    newRecord = Record{
         Id:        id,
         Method:    method,
-        Action:    &action,
+        Action:    action,
         Cacheable: cacheable,
-    })
+    }
+
+    self.PriorityList.Append(&newRecord)
 
     self.log(logPrefix + " Registered.")
 }

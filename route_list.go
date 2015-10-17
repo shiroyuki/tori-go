@@ -7,7 +7,7 @@ type Record struct {
     Id        string
     Method    string
     Route     *Route
-    Action    *Action
+    Action    Action
     Cacheable bool
     Previous  *Record
     Next      *Record
