@@ -100,7 +100,7 @@ func (self *Core) response(handler *Handler) {
     (*handler.Response).Write(compressed)
 }
 
-func (self *Core) listen(address *string) {
+func (self *Core) Listen(address *string) {
     if address != nil {
         self.Internal.Addr = *address
     }
