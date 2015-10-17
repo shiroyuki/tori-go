@@ -6,7 +6,7 @@ import "net/http"
 import "github.com/shiroyuki/re"
 import yotsuba "github.com/shiroyuki/yotsuba-go"
 
-serverSignature = "shiroyuki/tori-go/1.0"
+const serverSignature string = "shiroyuki/tori-go/1.0"
 
 type Core struct { // implements http.Handler
     Router     *Router
