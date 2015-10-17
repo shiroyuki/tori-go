@@ -1,10 +1,10 @@
-package web
+package tori
 
 import "bufio"
 import "bytes"
 import "fmt"
 import "net/http"
-import "../re"
+import "github.com/shiroyuki/re"
 
 type Handler struct {
     Route         *Route

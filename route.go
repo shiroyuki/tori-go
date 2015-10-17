@@ -1,6 +1,6 @@
-package web
+package tori
 
-import "../re"
+import "github.com/shiroyuki/re"
 
 var toriWebRoutingSimplePattern = re.Compile("<(?P<key>[^>]+)>")
 

@@ -1,6 +1,6 @@
-package web
+package tori
 
-import re "../re"
+import "github.com/shiroyuki/re"
 
 type Record struct {
     Id        string

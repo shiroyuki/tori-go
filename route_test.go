@@ -1,7 +1,7 @@
-package web
+package tori
 
 import "testing"
-import "../tameshigiri"
+import "github.com/shiroyuki/tameshigiri"
 
 func localTestWebRoutingRouteNewRoute(t *testing.T, givenPattern string, reversible bool) {
     var assertion tameshigiri.Assertion

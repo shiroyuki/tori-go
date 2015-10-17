@@ -1,24 +1,23 @@
 // Core for web framework
-package web
+package tori
 
 import "net/http"
-import tori  "../"
-import re    "../re"
-import cache "../cache"
+import "github.com/shiroyuki/re"
+import yotsuba "github.com/shiroyuki/yotsuba-go"
 
 type Core struct { // implements http.Handler
     Router     *Router
-    Cache      *cache.Driver
-    Enigma     *tori.Enigma
+    Cache      *yotsuba.CacheDriver
+    Enigma     *yotsuba.Enigma
     Compressed bool
 }
 
 // Create a core of the web framework with everything pre-configured for development.
 func NewSimpleCore() *Core {
-    var enigma = tori.Enigma{}
+    var enigma = yotsuba.Enigma{}
     var router = NewRouter()
-    var actualCacheDriver = cache.NewInMemoryCacheDriver(&enigma, false)
-    var castedCacheDriver = cache.Driver(actualCacheDriver)
+    var actualCacheDriver = yotsuba.NewInMemoryCacheDriver(&enigma, false)
+    var castedCacheDriver = yotsuba.CacheDriver(actualCacheDriver)
 
     return NewCore(
         router,
@@ -30,8 +29,8 @@ func NewSimpleCore() *Core {
 
 func NewCore(
     router     *Router,
-    cache      *cache.Driver,
-    enigma     *tori.Enigma,
+    cache      *yotsuba.CacheDriver,
+    enigma     *yotsuba.Enigma,
     compressed bool,
 ) *Core {
     return &Core{

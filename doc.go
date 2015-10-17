@@ -1,2 +1,2 @@
-// Package tori provides essential components and basic framework for web/application development
+// Package tori offers essential components for web service development
 package tori
