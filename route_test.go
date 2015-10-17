@@ -78,3 +78,37 @@ func TestWebRoutingNonReversibleRouteGetCompiledPattern(t *testing.T) {
     assertion.IsTrue(compiled != nil, "Unexpected compiled pattern")
     assertion.IsTrue(err      == nil, "No error raised")
 }
+
+func TestRouteMatchOk(t *testing.T) {
+    var assertion    tameshigiri.Assertion
+    var givenPattern string
+    var newRoute     *Route
+
+    assertion = tameshigiri.NewAssertion(t)
+
+    givenPattern = "/user/<alias>"
+    newRoute     = NewRoute(givenPattern, true)
+
+    matches := newRoute.Match("/user/shiroyuki")
+
+    assertion.IsTrue(matches != nil, "There should be a match.")
+
+    actual  := (*matches.Key("alias"))[0]
+
+    assertion.Equals("shiroyuki", actual, "This should be 'shiroyuki'.")
+}
+
+func TestRouteMatchFails(t *testing.T) {
+    var assertion    tameshigiri.Assertion
+    var givenPattern string
+    var newRoute     *Route
+
+    assertion = tameshigiri.NewAssertion(t)
+
+    givenPattern = "/user/<alias>"
+    newRoute     = NewRoute(givenPattern, true)
+
+    matches := newRoute.Match("/user/shiroyuki/asdf")
+
+    assertion.IsTrue(matches == nil, "There should not be a match.")
+}

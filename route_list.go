@@ -1,5 +1,6 @@
 package tori
 
+import "log"
 import "github.com/shiroyuki/re"
 
 type Record struct {
@@ -13,17 +14,22 @@ type Record struct {
 }
 
 type RecordList struct {
-    head *Record
+    head      *Record
+    DebugMode bool
 }
 
 func (self *RecordList) Append(record *Record) {
     var cursor *Record
 
     if self.head == nil {
+        self.log("Make " + (*record.Route).Pattern + " the head of the list.")
+
         self.head = record
 
         return
     }
+
+    self.log("Appending " + (*record.Route).Pattern + " at the end of the list...")
 
     cursor = self.head
 
@@ -53,17 +59,49 @@ func (self *RecordList) Append(record *Record) {
 }
 
 func (self *RecordList) Find(method string, path string) (*Record, *re.MultipleResult) {
-    var cursor *Record = self.head
+    var cursor   *Record = self.head
+    var firstLine string = method + " " + path
 
-    for cursor != nil && cursor.Next != nil {
-        matches := cursor.Route.Match(method, path)
+    self.log(firstLine + ": Looking for a record...")
 
-        if matches != nil {
+    for cursor != nil {
+        matches          := cursor.Route.Match(path)
+        isMethodExpected := (*cursor).Method == method
+
+        self.log(firstLine + ": Compare against " + cursor.Route.Pattern)
+
+        if matches != nil && isMethodExpected {
+            self.log(firstLine + ": Found a match.")
+
             return cursor, matches
+        }
+
+        if isMethodExpected {
+            self.log(firstLine + ": Not a match due to unexpected method.")
+        }
+
+        if cursor.Next == nil {
+            self.log(firstLine + ": End of iteration")
+
+            break
         }
 
         cursor = cursor.Next
     }
 
+    self.log(firstLine + ": Failed to find a match.")
+
     return nil, nil
+}
+
+func (self *RecordList) HasAny() bool {
+    return self.head != nil
+}
+
+func (self *RecordList) log(message string) {
+    if !self.DebugMode {
+        return
+    }
+
+    log.Println(message)
 }

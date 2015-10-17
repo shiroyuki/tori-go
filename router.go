@@ -48,13 +48,48 @@ func (self *Router) Handle(
     })
 }
 
+func (self *Router) OnGet(
+    id         string,
+    pattern    string,
+    action     Action,
+    cacheable  bool,
+) {
+    self.Handle(id, METHOD_GET, pattern, action, true, cacheable)
+}
+
+func (self *Router) OnPost(
+    id         string,
+    pattern    string,
+    action     Action,
+) {
+    self.Handle(id, METHOD_POST, pattern, action, true, false)
+}
+
+func (self *Router) OnPut(
+    id         string,
+    pattern    string,
+    action     Action,
+) {
+    self.Handle(id, METHOD_PUT, pattern, action, true, false)
+}
+
+func (self *Router) OnDelete(
+    id         string,
+    pattern    string,
+    action     Action,
+) {
+    self.Handle(id, METHOD_DELETE, pattern, action, true, false)
+}
+
 func (self *Router) Find(method string, path string) (*Record, *re.MultipleResult) {
-    self.log(fmt.Sprintf("Incomming request for %s %s\n", method, path))
+    var firstLine string = fmt.Sprintf("%s %s", method, path)
+
+    self.log(fmt.Sprintf("Incomming request for %s", firstLine))
 
     r, p := self.PriorityList.Find(method, path)
 
     if r == nil {
-        self.log(fmt.Sprintf("Unable to find the request handler for %s %s\n", method, path))
+        self.log(fmt.Sprintf("Unable to find the request handler for %s", firstLine))
     }
 
     return r, p

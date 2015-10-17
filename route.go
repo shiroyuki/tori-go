@@ -1,5 +1,6 @@
 package tori
 
+import "fmt"
 import "github.com/shiroyuki/re"
 
 var toriWebRoutingSimplePattern = re.Compile("<(?P<key>[^>]+)>")
@@ -16,11 +17,8 @@ var toriWebRoutingSimplePattern = re.Compile("<(?P<key>[^>]+)>")
 //
 //      requestPath := route.For(params) // expected: /user/shiroyuki
 type Route struct {
-    Id         string
-    Method     string
     Pattern    string
     RePattern  *re.Expression
-    Handler    Action
     Reversible bool
     Cacheable  bool
 }
@@ -51,7 +49,7 @@ func (self *Route) GetCompiledPattern() (*re.Expression, error) {
     return self.compileReversiblePattern()
 }
 
-func (self *Route) Match(method string, path string) (*re.MultipleResult) {
+func (self *Route) Match(path string) (*re.MultipleResult) {
     pattern, err := self.GetCompiledPattern()
 
     if err != nil {
@@ -60,7 +58,7 @@ func (self *Route) Match(method string, path string) (*re.MultipleResult) {
 
     result := pattern.SearchAll(path)
 
-    if self.Method != method || !result.HasAny() {
+    if !result.HasAny() {
         return nil
     }
 
@@ -86,7 +84,7 @@ func (self *Route) compileReversiblePattern() (*re.Expression, error) {
     }
 
     alternativePattern = toriWebRoutingSimplePattern.ReplaceAll(self.Pattern, "(?P<${key}>[^/]+)")
-    self.RePattern     = re.Compile(alternativePattern)
+    self.RePattern     = re.Compile(fmt.Sprintf("^%s$", alternativePattern))
 
     return self.RePattern, nil
 }

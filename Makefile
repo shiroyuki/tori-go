@@ -19,5 +19,5 @@ install_deps:
 	@${GCC_GO_GET} github.com/shiroyuki/re
 
 quick_push: test
-	git commit -am "Quick updates"
-	git push
+	@git commit -am "Quick updates"
+	@git push
