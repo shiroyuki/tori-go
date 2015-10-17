@@ -18,7 +18,7 @@ func NewRouter() *Router {
     }
 }
 
-func (self *Router) AddRoute(
+func (self *Router) Handle(
     id         string,
     method     string,
     pattern    string,

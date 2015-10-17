@@ -37,6 +37,7 @@ func NewHandler(
         BufferEnabled: true,
     }
 
+    handler.SetHeader("Server", "shiroyuki/tori-go/1.0")
     handler.SetStatus(http.StatusOK)
 
     return handler
