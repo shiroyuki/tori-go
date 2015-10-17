@@ -1,5 +1,6 @@
 package tori
 
+import "fmt"
 import "log"
 import "github.com/shiroyuki/re"
 
@@ -29,6 +30,8 @@ func (self *Router) Handle(
     reversible bool,
     cacheable  bool,
 ) {
+    self.log(fmt.Sprintf("Preparing to handle route #%s (%s %s)", id, method, pattern))
+
     _, ok := self.IdToRouteMap[pattern]
 
     if !ok {
@@ -46,17 +49,21 @@ func (self *Router) Handle(
 }
 
 func (self *Router) Find(method string, path string) (*Record, *re.MultipleResult) {
-    if self.DebugMode {
-        log.Printf("Incomming request for %s %s\n", method, path)
-    }
+    self.log(fmt.Sprintf("Incomming request for %s %s\n", method, path))
 
     r, p := self.PriorityList.Find(method, path)
 
-    if self.DebugMode {
-        if r == nil {
-            log.Printf("Unable to find the request handler for %s %s\n", method, path)
-        }
+    if r == nil {
+        self.log(fmt.Sprintf("Unable to find the request handler for %s %s\n", method, path))
     }
 
     return r, p
+}
+
+func (self *Router) log(message) {
+    if !self.DebugMode {
+        return
+    }
+
+    log.Println(message)
 }
