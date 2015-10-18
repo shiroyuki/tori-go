@@ -52,6 +52,27 @@ func (self *Handler) GetHeader(key string) string {
     return self.Request.Header.Get(key)
 }
 
+// Retrieves the parameter at the match index of the request path.
+//
+// For example, if the non-reversible pattern is defined as /path/(\d+)/([a-z]+)
+// and the request path is /path/123/def, there will be two indices where the
+// values are "123" and "def" for index 1 and 2 respectively.
+func (self *Handler) Index(key int) string {
+    value := self.Parameters.Index(key)
+
+    return *value
+}
+
+// Retrieves the parameter defined by the key of the request path.
+//
+// For example, if the reversible pattern is defined as /path/<k1>/<h2> and
+// the request path is /path/abc/def, there will be two keys, "k1" and "k2".
+func (self *Handler) Key(key string) []string {
+    value := self.Parameters.Key(key)
+
+    return *value
+}
+
 // Add the response header.
 func (self *Handler) AddHeader(key string, value string) {
     (*self.Response).Header().Add(key, value)
